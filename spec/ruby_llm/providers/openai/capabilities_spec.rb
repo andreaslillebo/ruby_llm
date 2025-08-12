@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe RubyLLM::Providers::OpenAI::Capabilities do # rubocop:disable RSpec/SpecFilePathFormat
   describe '.normalize_temperature' do
-    it 'forces temperature to 1.0 for O1 models' do
-      o1_models = %w[o1 o1-mini o1-preview o3-mini]
+    it 'forces temperature to 1.0 for reasoning models' do
+      reasoning_models = %w[o1 o1-mini o1-preview o3-mini gpt-5 gpt-5-mini gpt-5-nano]
 
-      o1_models.each do |model|
+      reasoning_models.each do |model|
         result = described_class.normalize_temperature(0.7, model)
         expect(result).to eq(1.0)
       end
