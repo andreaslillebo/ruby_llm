@@ -22,4 +22,22 @@ RSpec.describe RubyLLM::Attachment do
     expect(status.success?).to be(true), stderr
     expect(stdout.strip).to eq('ruby.txt,text/plain')
   end
+
+  it 'classifies .docx files as document type' do
+    script = <<~'RUBY'
+      require 'ruby_llm'
+
+      content = RubyLLM::Content.new('What is in this file?', 'spec/fixtures/sample.docx')
+      attachment = content.attachments.first
+      puts "#{attachment.type},#{attachment.mime_type}"
+    RUBY
+
+    stdout, stderr, status = Open3.capture3(
+      RbConfig.ruby, '-Ilib', '-e', script,
+      chdir: File.expand_path('../..', __dir__)
+    )
+
+    expect(status.success?).to be(true), stderr
+    expect(stdout.strip).to eq('document,application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+  end
 end

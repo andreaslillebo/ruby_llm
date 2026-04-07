@@ -82,6 +82,7 @@ module RubyLLM
       return :audio if audio?
       return :pdf if pdf?
       return :text if text?
+      return :document if document?
 
       :unknown
     end
@@ -115,6 +116,10 @@ module RubyLLM
 
     def text?
       RubyLLM::MimeType.text? mime_type
+    end
+
+    def document?
+      RubyLLM::MimeType.document? mime_type
     end
 
     def to_h
