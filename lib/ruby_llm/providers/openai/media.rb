@@ -22,8 +22,8 @@ module RubyLLM
             case attachment.type
             when :image
               parts << format_image(attachment)
-            when :pdf
-              parts << format_pdf(attachment)
+            when :pdf, :document
+              parts << format_file(attachment)
             when :audio
               parts << format_audio(attachment)
             when :text
@@ -45,12 +45,12 @@ module RubyLLM
           }
         end
 
-        def format_pdf(pdf)
+        def format_file(file)
           {
             type: 'file',
             file: {
-              filename: pdf.filename,
-              file_data: pdf.for_llm
+              filename: file.filename,
+              file_data: file.for_llm
             }
           }
         end

@@ -20,5 +20,19 @@ RSpec.describe RubyLLM::Providers::OpenAI::Media do
 
       expect(formatted).to eq(payload)
     end
+
+    it 'serializes document attachments into file blocks' do
+      docx_path = File.join('spec', 'fixtures', 'sample.docx')
+      content = RubyLLM::Content.new('Summarize this', docx_path)
+
+      blocks = described_class.format_content(content)
+
+      expect(blocks.first).to include(type: 'text', text: 'Summarize this')
+      file_block = blocks.detect { |block| block[:type] == 'file' }
+      expect(file_block).to be_present
+      expect(file_block[:file][:filename]).to eq('sample.docx')
+      docx_mime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      expect(file_block[:file][:file_data]).to start_with("data:#{docx_mime};base64,")
+    end
   end
 end
